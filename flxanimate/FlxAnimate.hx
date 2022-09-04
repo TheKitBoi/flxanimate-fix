@@ -330,6 +330,52 @@ class FlxAnimate extends FlxSprite
 		#end
 		super.destroy();
 	}
+	
+	public function playAnim(?Name:String, Force:Bool = false, Reverse:Bool = false, Frame:Int = 0)
+	{
+		pauseAnim();
+		@:privateAccess
+		var curThing = anim.animsMap.get(Name);
+		@:privateAccess
+		if (curThing != null && anim.name != Name || Force || !Reverse && anim.curFrame >= anim.length || Reverse && anim.curFrame <= 0)
+		{
+			if (!Reverse)
+				anim.curFrame = Frame;
+			else
+				anim.curFrame =  Frame - anim.length;
+		}
+		@:privateAccess
+		if ([null, ""].indexOf(Name) == -1 && curThing != null)
+		{
+			anim.x = x + curThing.X;
+			anim.y = y + curThing.Y;
+			anim.frameLength = 0;
+			for (layer in curThing.timeline.L)
+			{
+				if (anim.frameLength < layer.FR.length)
+				{
+					anim.frameLength = layer.FR.length;
+				}
+			}
+			timeline = curThing.timeline;
+			@:privateAccess
+			anim.loopType = curThing.looped ? loop : playonce;
+			@:privateAccess
+			anim.name = curThing.symbolName;
+		}
+		reversed = Reverse;
+		isPlaying = true;
+	}
+
+	public function pauseAnim()
+	{
+		isPlaying = false;
+	}
+	public function stopAnim()
+	{
+		pauseAnim();
+		anim.curFrame = 0;
+	}
 
 	public override function updateAnimation(elapsed:Float) 
 	{
