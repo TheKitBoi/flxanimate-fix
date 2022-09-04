@@ -35,7 +35,18 @@ typedef Settings = {
 
 class FlxAnimate extends FlxSprite
 {
+	
+	/**
+	 * When ever the animation is playing.
+	 */
+	public var isPlaying(default, null):Bool = false;
+	
 	public var anim(default, null):FlxAnim;
+	
+	
+	public var onClick:Void->Void;
+
+	public var onComplete:Void->Void;
 
 	#if FLX_SOUND_SYSTEM
 	public var audio:FlxSound;
@@ -44,6 +55,16 @@ class FlxAnimate extends FlxSprite
 	public var rectangle:FlxRect;
 	
 	public var showPivot:Bool = false;
+	
+	public var framerate(default, set):Float;
+
+	/**
+	 * Internal, used for each skip between frames.
+	 */
+	var frameDelay:Float;
+
+	var timeline:Timeline;
+	/**
 
 	/**
 	 * # Description
